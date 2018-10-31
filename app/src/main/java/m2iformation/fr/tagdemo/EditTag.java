@@ -15,7 +15,10 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
     private Integer tagColor;
     private int tagWeight;
     private Bitmap fingerTag;
-    private Color bakcgroundColor;
+    private Integer bkgColor;
+
+    private OnOutListener onOutListener;
+
 
     Paint paint = new Paint();
     //Définir l'objet Paint
@@ -38,6 +41,16 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
+        setTagColor(attrs.getAttributeIntValue("http://schemas.android.com/apk/res-auto",
+                "tagColor",
+                Color.BLACK));
+
+        setTagWeight(attrs.getAttributeIntValue("http://schemas.android.com/apk/res-auto",
+                "tagWeight",
+                10));
+        setBkgColor(attrs.getAttributeIntValue("http://schemas.android.com/apk/res-auto",
+                "bkgColor",
+                Color.GRAY));
     }
 
     // Cette méthode est exécutée chaque fois que Android redessine la zone.
@@ -48,12 +61,13 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
         canvas.drawPath(path, paint);
     }
 
-    public void setBakcgroundColor(Color bakcgroundColor) {
-        this.bakcgroundColor = bakcgroundColor;
+    public void setBkgColor(Integer backgroundColor) {
+        this.bkgColor = backgroundColor;
+        setBackgroundColor(bkgColor);
     }
 
-    public Color getBakcgroundColor() {
-        return bakcgroundColor;
+    public Integer getBakcgroundColor() {
+        return bkgColor;
     }
 
     public Integer getTagColor() {
@@ -84,7 +98,9 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
     }
 
     public void clear() {
-
+        path = new Path();
+        paint.setColor(Color.BLACK);
+        invalidate();
     }
 
     public void saveJpg(String fichier) {
@@ -103,7 +119,29 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
         if(event.getAction() == MotionEvent.ACTION_MOVE) {
             path.lineTo(event.getX(), event.getY());
         }
+        if (event.getX()<10 || event.getX()>getWidth()- 10){
+            if (onOutListener != null){
+                onOutListener.onOut(this);
+            }
+        }
+        if (event.getX()<10 || event.getX()>getHeight()- 10){
+            if (onOutListener != null){
+                onOutListener.onOut(this);
+            }
+        }
         invalidate();
         return true;
+    }
+
+    public OnOutListener getOnOutListener() {
+        return onOutListener;
+    }
+
+    public void setOnOutListener(OnOutListener onOutListener) {
+        this.onOutListener = onOutListener;
+    }
+
+    public interface OnOutListener{
+        void onOut(View view);
     }
 }
