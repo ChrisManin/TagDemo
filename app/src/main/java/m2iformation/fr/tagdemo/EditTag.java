@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class EditTag extends AppCompatImageView implements View.OnTouchListener {
-    private Color tagColor;
+    private Integer tagColor;
     private int tagWeight;
     private Bitmap fingerTag;
     private Color bakcgroundColor;
@@ -56,7 +56,7 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
         return bakcgroundColor;
     }
 
-    public Color getTagColor() {
+    public Integer getTagColor() {
         return tagColor;
     }
 
@@ -68,8 +68,11 @@ public class EditTag extends AppCompatImageView implements View.OnTouchListener 
         return fingerTag;
     }
 
-    public void setTagColor(Color tagColor) {
+    public void setTagColor(Integer tagColor) {
         this.tagColor = tagColor;
+        paint.setColor(getTagColor());
+        invalidate();
+
     }
 
     public void setTagWeight(int tagWeight) {
